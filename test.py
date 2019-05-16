@@ -12,11 +12,10 @@ conn.request("POST", "/oauth/token", payload, headers)
 res = conn.getresponse()
 data = res.read()
 token = json.loads(data)['access_token']
-print(token)
 
 conn = http.client.HTTPConnection("localhost:80")
 
-headers = { 'authorization': "Bearer "+token }
+headers = { 'authorization': "Bearer "+ token }
 
 conn.request("GET", "/secured/ping", headers=headers)
 

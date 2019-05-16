@@ -4,23 +4,29 @@ from six.moves.urllib.request import urlopen
 from functools import wraps
 from flask_cors import cross_origin
 from flask import Flask, request, jsonify, _request_ctx_stack
-import jwt 
-# from flask_cors import cross_origin
-# from jose import jwt
+from jose import jwt 
 
-from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
-jwt.unregister_algorithm('RS256')
-jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
-
-app = Flask(__name__)
-
-# API_AUDIENCE = YOUR_API_AUDIENCE
-ALGORITHMS = "RS256"
 AUTH0_DOMAIN = '***REMOVED***'
-# Format error response and append status code
+API_AUDIENCE = '***REMOVED***'
+ALGORITHMS = ["RS256"]
+
+APP = Flask(__name__)
+
+# Error handler
+class AuthError(Exception):
+    def __init__(self, error, status_code):
+        self.error = error
+        self.status_code = status_code
+
+@APP.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
+
 
 def get_token_auth_header():
-    """Obtains the access token from the Authorization Header
+    """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get("Authorization", None)
     if not auth:
@@ -48,7 +54,7 @@ def get_token_auth_header():
     return token
 
 def requires_auth(f):
-    """Determines if the access token is valid
+    """Determines if the Access Token is valid
     """
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -66,32 +72,44 @@ def requires_auth(f):
                     "n": key["n"],
                     "e": key["e"]
                 }
-        
         if rsa_key:
-            # return json.dumps(rsa_key)
-
-            payload = jwt.decode(
+            try:
+                payload = jwt.decode(
                     token,
                     rsa_key,
                     algorithms=ALGORITHMS,
-                    audience='***REMOVED***',
+                    audience=API_AUDIENCE,
                     issuer="https://"+AUTH0_DOMAIN+"/"
                 )
-            # return payload
-            _app_ctx_stack.top.current_user = payload
+            except jwt.ExpiredSignatureError:
+                raise AuthError({"code": "token_expired",
+                                "description": "token is expired"}, 401)
+            except jwt.JWTClaimsError:
+                raise AuthError({"code": "invalid_claims",
+                                "description":
+                                    "incorrect claims,"
+                                    "please check the audience and issuer"}, 401)
+            # except Exception:
+            #     raise AuthError({"code": "invalid_header",
+            #                     "description":
+            #                         "Unable to parse authentication"
+            #                         " token."}, 401)
+
+            _request_ctx_stack.top.current_user = payload
             return f(*args, **kwargs)
         raise AuthError({"code": "invalid_header",
-                        "description": "Unable to find appropriate key"}, 400)
+                        "description": "Unable to find appropriate key"}, 401)
     return decorated
 
+
 # This doesn't need authentication
-@app.route("/ping")
+@APP.route("/ping")
 @cross_origin(headers=['Content-Type', 'Authorization'])
 def ping():
     return "All good. You don't need to be authenticated to call this"
 
 # This does need authentication
-@app.route("/secured/ping")
+@APP.route("/secured/ping")
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def secured_ping():
@@ -99,7 +117,7 @@ def secured_ping():
 
 if __name__ == "__main__":
     
-    app.debug = True
-    app.run(host = '0.0.0.0', port = '80')
+    APP.debug = True
+    APP.run(host = '0.0.0.0', port = '80')
 
  
