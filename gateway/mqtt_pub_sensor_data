@@ -1,0 +1,93 @@
+import paho.mqtt.client as mqtt
+import random
+import threading
+import json
+from datetime import datetime
+
+# MQTT Settings
+MQTT_Broker = "postman.cloudmqtt.com"
+MQTT_Port = 18467
+username = ***REMOVED***
+password = ***REMOVED***
+
+Keep_Alive_Interval = 45
+MQTT_Topic_Humidity = "gateway_identifier/DHT22/Humidity"
+MQTT_Topic_Temperature = "gateway_identifier/DHT22/Temperature"
+
+
+def on_connect(client, userdata, rc):
+    if rc != 0:
+        pass
+        print("Unable to connect to MQTT Broker...")
+    else:
+        print("Connected with MQTT Broker: " + str(MQTT_Broker))
+
+
+def on_publish(client, userdata, mid):
+    pass
+
+
+def on_disconnect(client, userdata, rc):
+    if rc != 0:
+        pass
+
+
+# uncomment to debug
+# def on_log(mqttc, obj, level, string):
+#    print('Connecting to MQQT broker')
+
+# connecting to mqtt broker and setting commands
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_disconnect = on_disconnect
+client.on_publish = on_publish
+client.connect(MQTT_Broker, int(MQTT_Port), int(Keep_Alive_Interval))
+client.username_pw_set(username, password) # must log in with username/pass for broker
+
+
+def publish_to_topic(topic, message):
+    client.publish(topic, message)
+    print("Published: " + str(message) + " " + "on MQTT Topic: " + str(topic))
+    print("\n")
+
+
+# FAKE SENSOR
+# Dummy code used as Fake Sensor to publish some random values to MQTT Broker
+
+toggle = 0
+
+
+def publish_fake_sensor_values_to_mqtt():
+    threading.Timer(3.0, publish_fake_sensor_values_to_mqtt).start()
+    global toggle
+    if toggle == 0:
+        humidity_fake_value = float("{0:.2f}".format(random.uniform(50, 100)))
+
+        humidity_data = {}
+        humidity_data['Sensor_ID'] = "Dummy-1"
+        humidity_data['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
+        humidity_data['Humidity'] = humidity_fake_value
+        humidity_json_data = json.dumps(humidity_data)
+
+        print("Publishing fake Humidity Value: " + str(humidity_fake_value) + "...")
+        publish_to_topic(MQTT_Topic_Humidity, humidity_json_data)
+        toggle = 1
+
+    else:
+        temperature_fake_value = float("{0:.2f}".format(random.uniform(1, 30)))
+
+        temperature_data = {}
+        temperature_data['Sensor_ID'] = "Dummy-2"
+        temperature_data['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
+        temperature_data['Temperature'] = temperature_fake_value
+        temperature_json_data = json.dumps(temperature_data)
+
+        print("Publishing fake Temperature Value: " + str(temperature_fake_value) + "...")
+        publish_to_topic(MQTT_Topic_Temperature, temperature_json_data)
+        toggle = 0
+
+
+publish_fake_sensor_values_to_mqtt()
+
+client.loop_forever()
+# ====================================================
