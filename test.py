@@ -2,22 +2,16 @@ import http.client
 import json
 from six.moves.urllib.request import urlopen
 conn = http.client.HTTPSConnection("***REMOVED***")
-
 payload = "{\"client_id\":\"RDDiwomSJ3UonkAgRDJ2sZR6h0brNo9F\",\"client_secret\":\"KXnkIGkLLxd02QSSrOQ__2ZGOcnHtBGpjjHrJd2syf-o8uusVdyRgbXL4-L4eSjI\",\"audience\":\"***REMOVED***\",\"grant_type\":\"client_credentials\"}"
-
 headers = { 'content-type': "application/json" }
-
 conn.request("POST", "/oauth/token", payload, headers)
-
 res = conn.getresponse()
 data = res.read()
 token = json.loads(data)['access_token']
-
 jsonurl = urlopen("https://***REMOVED***/.well-known/jwks.json")
-        
 jwks = json.loads(jsonurl.read())
-***REMOVED***
 
+***REMOVED***
 ***REMOVED***
 ***REMOVED***
 ***REMOVED***

@@ -1,16 +1,24 @@
+"""
+TODO: 
+    Make managment_system file
+    connect it to broker with code
+    have it send broker on_message() data to mongoDB in cloud
+    TEST with data from Haya
+
+"""
+
+
 import paho.mqtt.client as mqtt
 import random
 import threading
 import json
 from datetime import datetime
 from pymongo import MongoClient
-
-"""
-NEEDS TO BE IMPLEMENTED:
-    http.client for HTTPS communication
-    Authentication of gateway in management system
-    
-"""
+import http.client
+import json
+***REMOVED***
+***REMOVED***
+from six.moves.urllib.request import urlopen
 
 #Gateway Name
 __name = "Pi_Gateway"
@@ -26,25 +34,26 @@ __password = ***REMOVED***
 
 
 # MongoDB Name
-db = MongoClient(***REMOVED***)
+uri = "***REMOVED***"
+db = MongoClient(uri)
 database = db['gateway']
 collection = database['DHT22']
 mqtt_topics = __name + "/#" # all topics/devices under Pi_Gateway
 mqtt_post_topics = __name + "/"
 __Keep_Alive_Interval = 45
-#_MQTT_Topic = "Pi_Gateway/DHT22/Humidity"
-#_MQTT_Topic_Humidity = "Pi_Gateway/DHT22/Humidity"
-#_MQTT_Topic_Temperature = "Pi_Gateway/DHT22/Temperature"
 
-def on_connect(client, userdata, rc):
+def on_connect(client, userdata,flags, rc):
+    
     if rc != 0:
         pass
         print("Unable to connect to MQTT Broker...")
     else:
         print("Connected with MQTT Broker: " + str(__cloud_broker))
         client.subscribe(mqtt_topics)
+        print("On_connect")
+        publish_fake_message("gateway_identifier/DHT22/Humidity",__cloud_client)
 
-def on_publish(client, userdata, mid):
+def on_publish(client, userdata,flags, mid):
     pass
 
 def on_disconnect(client, userdata, rc):
@@ -55,7 +64,8 @@ def on_disconnect(client, userdata, rc):
     This method is responsible for adding sensor data to the gateway local storage which is implemented with 
     MongoDB
 """
-def on_message(client, userdata, msg):
+def on_message(client, userdata,flags, msg):
+    print("Message recived")
     receive_time = datetime.datetime.now()
     message = msg.payload.decode("utf-8")
     is_float_value = False
@@ -71,9 +81,8 @@ def on_message(client, userdata, msg):
     else:
         print(str(receive_time) + ": " + msg.topic + " " + message)
         post = {"time": receive_time, "topic": msg.topic, "value": message}
-
-    collection.insert_one(post)
-
+    collection.insert_one(data)
+    
 
 # connecting to MQTT Cloud broker and setting commands
 __cloud_client = mqtt.Client(__name)
@@ -84,16 +93,35 @@ __cloud_client.on_message = on_message
 __cloud_client.connect(__cloud_broker, int(__cloud_port), int(__Keep_Alive_Interval))
 __cloud_client.username_pw_set(__username, __password)  # must log in with username/pass for broker
 
+def publish_fake_message(topic, clients):
+    __cloud_client = clients
+    humidity_data = {}
+    humidity_data['Sensor_ID'] = "Dummy-1"
+    humidity_data['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
+    humidity_data['Humidity'] = 322
+    humidity_json_data = json.dumps(humidity_data)
+    message = humidity_json_data
+    __cloud_client.publish(topic, message)
 
-# connecting to MQTT Cloud broker and setting commands
-__client = mqtt.Client(__name)
-__client.on_connect = on_connect
-__client.on_disconnect = on_disconnect
-__client.on_publish = on_publish
-__client.on_message = on_message
-__client.connect(__name, int(__gateway_port), int(__Keep_Alive_Interval))
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
 
-__client.loop_forever()
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
 
 __cloud_client.loop_forever()
-# ====================================================
