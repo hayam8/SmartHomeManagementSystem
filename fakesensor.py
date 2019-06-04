@@ -64,7 +64,7 @@ class DHT22:
             humidity_fake_value = float("{0:.2f}".format(random.uniform(50, 100)))
 
             humidity_data = {}
-            humidity_data['Sensor_ID'] = "Dummy-1"
+            humidity_data['Sensor_ID'] = self.__deviceName
             humidity_data['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
             humidity_data['Humidity'] = humidity_fake_value
             humidity_json_data = json.dumps(humidity_data)
