@@ -26,7 +26,9 @@ __password = ***REMOVED***
 
 
 # MongoDB Name
-db = MongoClient(***REMOVED***)
+# db = MongoClient(***REMOVED***)
+uri = "***REMOVED***"
+db = MongoClient(uri)
 database = db['gateway']
 collection = database['DHT22']
 mqtt_topics = __name + "/#" # all topics/devices under Pi_Gateway
