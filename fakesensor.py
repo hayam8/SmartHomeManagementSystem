@@ -23,9 +23,11 @@ class DHT22:
         When device is created it is authenticated with the gateway and will connect to it using MQTT
         It will then automatically begin publishing sensor data to gateway in encrypted format
     """
-    def __init__(self, gateway_name, ca_cert, port):
+    def __init__(self, gateway_name, ca_cert, device_crt, device_key, port):
         self.__broker = gateway_name
-        self.path_to_cert = ca_cert
+        self.ca_cert = ca_cert
+        self.device_crt = device_crt
+        self.device_key = device_key
         self.__port = port
         self.__keep_alive_interval = 45
         # MQTT broker connection
@@ -34,7 +36,7 @@ class DHT22:
         self.__client.on_disconnect = self.on_disconnect
         self.__client.on_publish = self.on_publish
         #self.__client.on_message = self.on_message
-        self.__client.tls_set(self.path_to_cert)
+        self.__client.tls_set(self.ca_cert, self.device_crt, self.device_key)
         self.__client.connect(self.__broker, int(self.__port), int(self.__keep_alive_interval))
         self.publish_fake_sensor_values_to_mqtt()
         self.__client.loop_forever()
