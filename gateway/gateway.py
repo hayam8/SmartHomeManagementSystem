@@ -7,16 +7,14 @@ from pymongo import MongoClient
 from http.client import HTTPSConnection
 
 """
-NEEDS TO BE IMPLEMENTED:
-    http.client for HTTPS communication
-    Authentication of gateway in management system
-    
+
+Author: Haya Majeed
 """
 
 
 class Gateway:
 
-    #Gateway Name
+    # Gateway Name
     __name = "Pi_Gateway"
     __gateway_port = 1883
     # MQTT settings for MQTT communication that takes place locally on gateway
@@ -28,7 +26,6 @@ class Gateway:
     __username = ***REMOVED***
     __password = ***REMOVED***
 
-
     # MongoDB Name
     db = MongoClient(***REMOVED***)
     database = db['gateway']
@@ -38,29 +35,38 @@ class Gateway:
     __Keep_Alive_Interval = 45
 
     def __init__(self, token, api_link):
-        self.token = token
-        self.api_link = api_link
-        try:
-            self.api = HTTPSConnection(api_link, timeout=60)
-        except:
-            pass
+        # connecting to MQTT Cloud broker and setting commands
+        __cloud_client = mqtt.Client(self.__name)
+        __cloud_client.on_connect = self.on_connect
+        __cloud_client.on_disconnect = self.on_disconnect
+        __cloud_client.on_publish = self.on_publish
+        __cloud_client.on_message = self.on_message
+        __cloud_client.connect(self.__cloud_broker, int(self.__cloud_port), int(self.__Keep_Alive_Interval))
+        __cloud_client.username_pw_set(self.__username, self.__password)  # must log in with username/pass for broker
+        __cloud_client.loop_forever()
 
-
-
-
-
-    def on_connect(client, userdata, rc):
+    """
+        This function is used as a callback to paho-mqtt on_connect function. It verifies if a connection is made 
+        successfully or not and then subscribes to appropriate topics.
+    """
+    def on_connect(self, client, userdata, rc):
         if rc != 0:
             pass
             print("Unable to connect to MQTT Broker...")
         else:
-            print("Connected with MQTT Broker: " + str(__cloud_broker))
-            client.subscribe(mqtt_topics)
+            print("Connected with MQTT Broker: " + str(self.__cloud_broker))
+            client.subscribe(self.mqtt_topics)
 
-    def on_publish(client, userdata, mid):
+    """
+        Callback function to paho-mqtt on_publish function
+    """
+    def on_publish(self, client, userdata, mid):
         pass
 
-    def on_disconnect(client, userdata, rc):
+    """
+        Callback function to paho-mqtt on_disconnect function
+    """
+    def on_disconnect(self, client, userdata, rc):
         if rc != 0:
             pass
 
@@ -68,7 +74,7 @@ class Gateway:
         This method is responsible for adding sensor data to the gateway local storage which is implemented with 
         MongoDB
     """
-    def on_message(client, userdata, msg):
+    def on_message(self, client, userdata, msg):
         receive_time = datetime.datetime.now()
         message = msg.payload.decode("utf-8")
         is_float_value = False
@@ -84,18 +90,5 @@ class Gateway:
         else:
             print(str(receive_time) + ": " + msg.topic + " " + message)
             post = {"time": receive_time, "topic": msg.topic, "value": message}
-        #__cloud_client.publish(msg.topic, message)
-        collection.insert_one(post)
+        self.collection.insert_one(post) # inserting data to database
 
-
-    # connecting to MQTT Cloud broker and setting commands
-    __cloud_client = mqtt.Client(__name)
-    __cloud_client.on_connect = on_connect
-    __cloud_client.on_disconnect = on_disconnect
-    __cloud_client.on_publish = on_publish
-    __cloud_client.on_message = on_message
-    __cloud_client.connect(__cloud_broker, int(__cloud_port), int(__Keep_Alive_Interval))
-    __cloud_client.username_pw_set(__username, __password)  # must log in with username/pass for broker
-    __cloud_client.loop_forever()
-
-    # ====================================================

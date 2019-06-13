@@ -1,8 +1,13 @@
 from fakesensor import DHT22
+"""
+This file is used as a test file for connecting to the gateway broker and publishing messages. Certificates were switched 
+out for incorrectly signed certificates or removed entirely for testing.
+Author: Haya Majeed
+"""
 
-
-__ca_cert = "ca.crt"
-__DHT22_cert = "client.crt"
-__DHT22_key = "client.key"
+__ca_cert = "***REMOVED***"
+__DHT22_cert = "***REMOVED***"
+__DHT22_key = "***REMOVED***"
+__gateway_name = "***REMOVED***"
 __TLS_PORT = 8883
-dummy = DHT22("***REMOVED***", __ca_cert, __DHT22_cert, __DHT22_key, __TLS_PORT)
+dummy = DHT22(__gateway_name, __ca_cert,  __TLS_PORT)
