@@ -29,8 +29,8 @@ __gateway_broker = ""
 # MQTT Settings for CloudMQTT broker working in cloud
 __cloud_broker = "postman.cloudmqtt.com"
 __cloud_port = 18467
-__username = ***REMOVED***
-__password = ***REMOVED***
+__username = ""
+__password = ""
 
 
 # MongoDB Name
