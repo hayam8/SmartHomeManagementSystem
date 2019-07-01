@@ -1,29 +1,20 @@
 import http.client
 import json
 from six.moves.urllib.request import urlopen
-conn = http.client.HTTPSConnection("***REMOVED***")
-payload = "{\"client_id\":\"RDDiwomSJ3UonkAgRDJ2sZR6h0brNo9F\",\"client_secret\":\"KXnkIGkLLxd02QSSrOQ__2ZGOcnHtBGpjjHrJd2syf-o8uusVdyRgbXL4-L4eSjI\",\"audience\":\"***REMOVED***\",\"grant_type\":\"client_credentials\"}"
-headers = { 'content-type': "application/json" }
+conn = http.client.HTTPSConnection("")
+payload = ""
+headers = {}
 conn.request("POST", "/oauth/token", payload, headers)
 res = conn.getresponse()
 data = res.read()
 token = json.loads(data)['access_token']
-jsonurl = urlopen("https://***REMOVED***/.well-known/jwks.json")
+jsonurl = urlopen("")
 jwks = json.loads(jsonurl.read())
 
 ***REMOVED***
 ***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
 
-***REMOVED***
-***REMOVED***
-
-***REMOVED***
-conn = http.client.HTTPConnection("***REMOVED***")
+conn = http.client.HTTPConnection("")
 
 headers = { 'authorization': "Bearer "+ token }
 
@@ -36,14 +27,11 @@ data = res.read()
 # print(data.decode("utf-8"))
 
 
-# client = MongoClient("23.99.178.246/?ssl=true") #host uri
-# db = client.test    #Select the database
-# db.authenticate(name="localhost",password='C2y6yDjf5' + r'/R' + '+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw' + r'/Jw==')
 from flask import Flask, request
 from flask import render_template
 from flask_pymongo import PyMongo,MongoClient
 app = Flask(__name__)
-uri = "***REMOVED***"
+uri = ""
 db = MongoClient(uri)
 database = db['db']
 collection = database['device']
