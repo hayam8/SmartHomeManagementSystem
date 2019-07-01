@@ -1,8 +1,10 @@
 import pymongo
-
+"""
+Testing Database
+"""
 
 #MongoClient object, specifying connection URL with IP address of connection
-client = pymongo.MongoClient("***REMOVED***")
+client = pymongo.MongoClient("")
 
 gateway_db = client["gateway"]
 
