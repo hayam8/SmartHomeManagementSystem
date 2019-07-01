@@ -6,8 +6,8 @@ from flask_cors import cross_origin
 from flask import Flask, request, jsonify, _request_ctx_stack
 from jose import jwt 
 
-AUTH0_DOMAIN = '***REMOVED***'
-API_AUDIENCE = '***REMOVED***'
+AUTH0_DOMAIN = ''
+API_AUDIENCE = ''
 ALGORITHMS = ["RS256"]
 
 APP = Flask(__name__)
