@@ -17,7 +17,7 @@ from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'api'
-app.config['MONGO_URI'] = '***REMOVED***'
+app.config['MONGO_URI'] = ''
 mongo =PyMongo(app)
 
 #/api/gateway/<string:gateway_id>[—downloads information about a gateway with identiﬁcation number expressed by a gateway_id parameter
@@ -73,31 +73,7 @@ def add_device():
     return jsonify({'result': output})
 
 
-""""
-from flask import Flask
-from flask_restful import Resource, Api
 
-
-app = Flask(__name__)
-api = Api(app)
-
-class Api(Resource):
-    def get(self):
-        return{'about':'Hello World!'}
-
-class Device(Resource):
-    def get(self, device_id):
-        return {'device': device_id}
-
-
-
-
-
-
-api.add_resource(Api, '/')
-api.add_resource(Device, '/device/<string:device_id>')
-
-"""
 
 if __name__ == '__main__':
     app.run(debug=True)
