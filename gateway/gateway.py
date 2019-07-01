@@ -18,16 +18,18 @@ class Gateway:
     __name = "Pi_Gateway"
     __gateway_port = 1883
     # MQTT settings for MQTT communication that takes place locally on gateway
-    __gateway_broker = ***REMOVED***
+    # Enter Name for local gateway
+    __gateway_broker = ""
 
     # MQTT Settings for CloudMQTT broker working in cloud
     __cloud_broker = "postman.cloudmqtt.com"
     __cloud_port = 18467
-    __username = ***REMOVED***
-    __password = ***REMOVED***
+    __username = ""
+    __password = ""
 
     # MongoDB Name
-    db = MongoClient(***REMOVED***)
+    # Must enter unique credentials for MongoDB host
+    db = MongoClient()
     database = db['gateway']
     collection = database['DHT22']
     mqtt_topics = __name + "/#" # all topics/devices under Pi_Gateway
