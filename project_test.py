@@ -8,6 +8,6 @@ Author: Haya Majeed
 __ca_cert = "***REMOVED***"
 __DHT22_cert = "***REMOVED***"
 __DHT22_key = "***REMOVED***"
-__gateway_name = "***REMOVED***"
+__gateway_name = ""
 __TLS_PORT = 8883
 dummy = DHT22(__gateway_name, __ca_cert,  __TLS_PORT)
