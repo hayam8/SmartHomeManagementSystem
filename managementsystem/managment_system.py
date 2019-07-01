@@ -34,7 +34,8 @@ __password = ***REMOVED***
 
 
 # MongoDB Name
-uri = "***REMOVED***"
+# Populate with unique uri
+uri = ""
 db = MongoClient(uri)
 database = db['gateway']
 collection = database['DHT22']
@@ -103,25 +104,5 @@ def publish_fake_message(topic, clients):
     message = humidity_json_data
     __cloud_client.publish(topic, message)
 
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
 
 __cloud_client.loop_forever()
