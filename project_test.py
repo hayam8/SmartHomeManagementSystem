@@ -5,9 +5,9 @@ out for incorrectly signed certificates or removed entirely for testing.
 Author: Haya Majeed
 """
 
-__ca_cert = "***REMOVED***"
-__DHT22_cert = "***REMOVED***"
-__DHT22_key = "***REMOVED***"
+__ca_cert = "certificates/ca.crt"
+__DHT22_cert = "certificates/client.crt"
+__DHT22_key = "certificates/client.key"
 __gateway_name = ""
 __TLS_PORT = 8883
 dummy = DHT22(__gateway_name, __ca_cert,  __TLS_PORT)

@@ -20,7 +20,7 @@ if "local_gateway_storage" in dblist:
 deviceTest = {"identifier":"floor_lamp",
               "name":"floor lamp",
               "device_type":"switch",
-              "controller_gateway":"***REMOVED***"
+              "controller_gateway":""
               }
 
 

@@ -16,8 +16,8 @@ from datetime import datetime
 from pymongo import MongoClient
 import http.client
 import json
-***REMOVED***
-***REMOVED***
+import socket
+import ssl
 from six.moves.urllib.request import urlopen
 
 #Gateway Name

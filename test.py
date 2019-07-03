@@ -11,8 +11,8 @@ token = json.loads(data)['access_token']
 jsonurl = urlopen("")
 jwks = json.loads(jsonurl.read())
 
-***REMOVED***
-***REMOVED***
+import socket
+import ssl
 
 conn = http.client.HTTPConnection("")
 
